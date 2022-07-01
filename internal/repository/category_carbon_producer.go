@@ -45,3 +45,5 @@ func (c *category_carbon_producer) Find(ctx context.Context,payload *dto.SearchG
 
 	return category_carbon_producers, dto.CheckInfoPagination(paginate, count), err
 }
+
+
