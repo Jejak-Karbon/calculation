@@ -6,6 +6,10 @@ import (
 	"gorm.io/gorm"
 )
 
+func (CategoryCarbonProducer) TableName() string {
+    return "categories_carbon_producer"
+}
+
 type CategoryCarbonProducer struct {
 	ID       uint   	`gorm:"primarykey;autoIncrement"`
 	Name     string 	`json:"name" gorm:"size:200;not null"`
