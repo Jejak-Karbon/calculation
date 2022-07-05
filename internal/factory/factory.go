@@ -8,6 +8,7 @@ import (
 type Factory struct {
 	CategoryCarbonProducerRepository repository.CategoryCarbonProducer
 	CarbonProducerRepository repository.CarbonProducer
+	UserCarbonProducerRepository repository.UserCarbonProducer
 }
 
 func NewFactory() *Factory {
@@ -15,5 +16,6 @@ func NewFactory() *Factory {
 	return &Factory{
 		CategoryCarbonProducerRepository: repository.NewCategoryCarbonProducer(db),
 		CarbonProducerRepository: repository.NewCarbonProducer(db),
+		UserCarbonProducerRepository: repository.NewUserCarbonProducer(db),
 	}
 }
