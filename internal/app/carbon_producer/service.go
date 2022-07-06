@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"context"
 
+	"github.com/born2ngopi/alterra/basic-echo-mvc/pkg/constant"
 	"github.com/born2ngopi/alterra/basic-echo-mvc/internal/dto"
 	"github.com/born2ngopi/alterra/basic-echo-mvc/internal/factory"
 	"github.com/born2ngopi/alterra/basic-echo-mvc/internal/model"
@@ -45,15 +46,32 @@ func (s *service) Find(ctx context.Context,filter *dto.FilterCarbonProducer,payl
 
 func (s *service) CreateUserCarbonProducer(ctx context.Context, user_id uint, carbon_producer_id uint, payload *dto.CalculateCarbonProducer) (string, error) {
 
+	// get category carbon producer id
+	data, err := s.CarbonProducerRepository.FindByID(ctx, carbon_producer_id)
+	if err != nil {
+		if err == constant.RecordNotFound {
+			return "", res.ErrorBuilder(&res.ErrorConstant.NotFound, err)
+		}
+		return "", res.ErrorBuilder(&res.ErrorConstant.InternalServerError, err)
+	}
+
 	// calculate emition
 	var amount float32
-	amount = float32(payload.JarakTempuh) * 0.321
 
-	data := model.UserCarbonProducer{UserID :user_id,CarbonProducerID:carbon_producer_id,Amount :amount}
-	fmt.Printf("%+v\n", data)
-	err := s.UserCarbonProducerRepository.Create(ctx, data)
-	if err != nil {
-		return "", res.ErrorBuilder(&res.ErrorConstant.InternalServerError, err)
+	// transportation
+	if data.CategoryCarbonProducerID == 1{
+		amount = float32(payload.JarakTempuh) * 0.321	
+	}
+
+	// alat elektronik
+	else if data.CalculateCarbonProducerID == 2{
+		amount = float32(payload.JarakTempuh) * 0.421	
+	}
+
+	data2 := model.UserCarbonProducer{UserID :user_id,CarbonProducerID:carbon_producer_id,Amount :amount}
+	err2 := s.UserCarbonProducerRepository.Create(ctx, data2)
+	if err2 != nil {
+		return "", res.ErrorBuilder(&res.ErrorConstant.InternalServerError, err2)
 	}
 
 	message :=  fmt.Sprintf("%s %f %s", "emisi yang ada hasilkan adalah sejumlah", amount, "KgCO2")

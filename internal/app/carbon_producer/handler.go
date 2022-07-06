@@ -67,8 +67,8 @@ func (h *handler) Calculate(c echo.Context) error {
 	id,_:= strconv.Atoi(c.Param("carbon_producer_id"))
 	payloadToken := middleware.GetIDFromToken(c)
 	
-	var user_id uint = uint(id)
-	var carbon_producer_id uint = uint(payloadToken.(float64))
+	var user_id uint = uint(payloadToken.(float64))
+	var carbon_producer_id uint = uint(id)
 
 	result, err := h.service.CreateUserCarbonProducer(c.Request().Context(), user_id, carbon_producer_id, payload)
 	if err != nil {

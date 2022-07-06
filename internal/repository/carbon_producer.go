@@ -11,6 +11,7 @@ import (
 
 type CarbonProducer interface {
 	Find(ctx context.Context,filter *dto.FilterCarbonProducer,payload *dto.SearchGetRequest, paginate *dto.Pagination) ([]model.CarbonProducer, *dto.PaginationInfo, error)
+	FindByID(ctx context.Context, ID uint) (model.CarbonProducer, error)
 }
 
 type carbon_producer struct {
@@ -53,7 +54,7 @@ func (c *carbon_producer) Find(ctx context.Context,filter *dto.FilterCarbonProdu
 func (c *carbon_producer) FindByID(ctx context.Context, ID uint) (model.CarbonProducer, error) {
 
 	var data model.CarbonProducer
-	err := p.Db.WithContext(ctx).Model(&data).Where("id = ?", ID).First(&data).Error
+	err := c.Db.WithContext(ctx).Model(&data).Where("id = ?", ID).First(&data).Error
 
 	return data, err
 }
