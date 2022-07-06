@@ -50,4 +50,12 @@ func (c *carbon_producer) Find(ctx context.Context,filter *dto.FilterCarbonProdu
 	return carbon_producers, dto.CheckInfoPagination(paginate, count), err
 }
 
+func (c *carbon_producer) FindByID(ctx context.Context, ID uint) (model.CarbonProducer, error) {
+
+	var data model.CarbonProducer
+	err := p.Db.WithContext(ctx).Model(&data).Where("id = ?", ID).First(&data).Error
+
+	return data, err
+}
+
 
