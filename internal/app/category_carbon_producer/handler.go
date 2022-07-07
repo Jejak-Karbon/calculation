@@ -1,4 +1,4 @@
-package user
+package category_carbon_producer
 
 import (
 	"github.com/born2ngopi/alterra/basic-echo-mvc/internal/dto"
@@ -24,33 +24,15 @@ func (h *handler) Get(c echo.Context) error {
 	if err := c.Bind(payload); err != nil {
 		return res.ErrorBuilder(&res.ErrorConstant.BadRequest, err).Send(c)
 	}
+
 	if err := c.Validate(payload); err != nil {
 		return res.ErrorBuilder(&res.ErrorConstant.Validation, err).Send(c)
 	}
-
+	
 	result, err := h.service.Find(c.Request().Context(), payload)
 	if err != nil {
 		return res.ErrorResponse(err).Send(c)
 	}
 
-	return res.CustomSuccessBuilder(200, result.Datas, "Get users success", nil).Send(c)
-}
-
-func (h *handler) GetByID(c echo.Context) error {
-
-	payload := new(dto.ByIDRequest)
-	if err := c.Bind(payload); err != nil {
-		return res.ErrorBuilder(&res.ErrorConstant.BadRequest, err).Send(c)
-	}
-	if err := c.Validate(payload); err != nil {
-		response := res.ErrorBuilder(&res.ErrorConstant.Validation, err)
-		return response.Send(c)
-	}
-
-	result, err := h.service.FindByID(c.Request().Context(), payload)
-	if err != nil {
-		return res.ErrorResponse(err).Send(c)
-	}
-
-	return res.SuccessResponse(result).Send(c)
+	return res.CustomSuccessBuilder(200, result.Datas, "Get category carbon producer success", &result.PaginationInfo).Send(c)
 }
