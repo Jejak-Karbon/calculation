@@ -19,7 +19,8 @@ type service struct {
 
 type Service interface {
 	Find(ctx context.Context,filter *dto.FilterCarbonProducer,payload *dto.SearchGetRequest) (*dto.SearchGetResponse[model.CarbonProducer], error)
-	CreateUserCarbonProducer(ctx context.Context, user_id uint, carbon_producer_id uint, payload *dto.CalculateCarbonProducer) (string, error)
+	CreateUserCarbonProducer(ctx context.Context, user_id uint, carbon_producer_id uint, category_carbon_producer_id uint ,  payload *dto.CalculateTransportationCarbonProducer) (string, error)
+	FindByID(ctx context.Context, carbon_producer_id uint) (*model.CarbonProducer, error)
 }
 
 func NewService(f *factory.Factory) Service {
@@ -44,28 +45,46 @@ func (s *service) Find(ctx context.Context,filter *dto.FilterCarbonProducer,payl
 	return result, nil
 }
 
-func (s *service) CreateUserCarbonProducer(ctx context.Context, user_id uint, carbon_producer_id uint, payload *dto.CalculateCarbonProducer) (string, error) {
+func (s *service) FindByID(ctx context.Context, carbon_producer_id uint) (*model.CarbonProducer, error) {
 
-	// get category carbon producer id
 	data, err := s.CarbonProducerRepository.FindByID(ctx, carbon_producer_id)
 	if err != nil {
 		if err == constant.RecordNotFound {
-			return "", res.ErrorBuilder(&res.ErrorConstant.NotFound, err)
+			return nil, res.ErrorBuilder(&res.ErrorConstant.NotFound, err)
 		}
-		return "", res.ErrorBuilder(&res.ErrorConstant.InternalServerError, err)
+		return nil, res.ErrorBuilder(&res.ErrorConstant.InternalServerError, err)
 	}
 
+	return &data, nil
+}
+
+func (s *service) CreateUserCarbonProducer(ctx context.Context, user_id uint, carbon_producer_id uint, category_carbon_producer_id uint , payload *dto.CalculateTransportationCarbonProducer) (string, error) {
+
 	// calculate emition
+	var koef float32
 	var amount float32
 
 	// transportation
-	if data.CategoryCarbonProducerID == 1{
-		amount = float32(payload.JarakTempuh) * 0.321	
-	}
+	if category_carbon_producer_id == 1{
 
-	// alat elektronik
-	else if data.CalculateCarbonProducerID == 2{
-		amount = float32(payload.JarakTempuh) * 0.421	
+		if carbon_producer_id == 1{
+			koef = 0.025	
+		}else if carbon_producer_id == 2{
+			koef = 0.1179
+		}else if carbon_producer_id == 4{
+			koef = 0.1689
+		}
+
+		if payload.BahanBakar == "Bensin"{
+			amount = 2.6 
+		}else if payload.BahanBakar == "Solar"{
+			amount = 2.2 
+		}
+
+		amount = amount * float32(payload.JarakTempuh) * koef
+
+	}else if category_carbon_producer_id == 2{
+		
 	}
 
 	data2 := model.UserCarbonProducer{UserID :user_id,CarbonProducerID:carbon_producer_id,Amount :amount}
