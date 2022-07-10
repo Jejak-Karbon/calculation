@@ -19,7 +19,7 @@ type service struct {
 
 type Service interface {
 	Find(ctx context.Context,filter *dto.FilterCarbonProducer,payload *dto.SearchGetRequest) (*dto.SearchGetResponse[model.CarbonProducer], error)
-	CreateUserCarbonProducer(ctx context.Context, user_id uint, carbon_producer_id uint, category_carbon_producer_id uint ,  payload *dto.CalculateTransportationCarbonProducer) (string, error)
+	CreateUserCarbonProducer(ctx context.Context, user_id uint, carbon_producer_id uint, category_carbon_producer_id uint ,  payload *dto.CalculateCarbonProducer) (string, error)
 	FindByID(ctx context.Context, carbon_producer_id uint) (*model.CarbonProducer, error)
 }
 
@@ -58,7 +58,7 @@ func (s *service) FindByID(ctx context.Context, carbon_producer_id uint) (*model
 	return &data, nil
 }
 
-func (s *service) CreateUserCarbonProducer(ctx context.Context, user_id uint, carbon_producer_id uint, category_carbon_producer_id uint , payload *dto.CalculateTransportationCarbonProducer) (string, error) {
+func (s *service) CreateUserCarbonProducer(ctx context.Context, user_id uint, carbon_producer_id uint, category_carbon_producer_id uint , payload *dto.CalculateCarbonProducer) (string, error) {
 
 	// calculate emition
 	var koef float32
@@ -84,7 +84,7 @@ func (s *service) CreateUserCarbonProducer(ctx context.Context, user_id uint, ca
 		amount = amount * float32(payload.JarakTempuh) * koef
 
 	}else if category_carbon_producer_id == 2{
-		
+		amount = float32(payload.JumlahWatt) * float32(payload.LamaPenggunaan) / float32(1000) * float32(0.725)
 	}
 
 	data2 := model.UserCarbonProducer{UserID :user_id,CarbonProducerID:carbon_producer_id,Amount :amount}

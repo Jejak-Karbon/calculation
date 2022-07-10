@@ -66,14 +66,7 @@ func (h *handler) Calculate(c echo.Context) error {
 		return res.ErrorResponse(err).Send(c)
 	}
 
-	payload := new(dto.CalculateTransportationCarbonProducer)
-
-	// if result.CategoryCarbonProducerID == 1{
-	// 	payload := new(dto.CalculateTransportationCarbonProducer)
-	// }
-	// else if  result.CategoryCarbonProducerID == 2{
-	// 	payload := new(dto.CalculateElectricityCarbonProducer)
-	// }
+	payload := new(dto.CalculateCarbonProducer)
 
 	if err := c.Bind(payload); err != nil {
 		return res.ErrorBuilder(&res.ErrorConstant.BadRequest, err).Send(c)
