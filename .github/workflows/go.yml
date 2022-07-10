@@ -52,6 +52,7 @@ jobs:
           cd ~/apps/calculation
           git checkout development
           git pull
+          docker rm $(docker stop $(docker ps -a -q --filter ancestor=jejakkarbon/calculation --format="{{.ID}}"))
           docker build -t jejakkarbon/calculation .
           docker run --network="host" -d jejakkarbon/calculation:latest
 
