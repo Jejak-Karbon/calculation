@@ -12,6 +12,8 @@ import (
 // please add new model in next index for consistency migrate and rollback
 var tables = []interface{}{
 	&model.UserCarbonProducer{},
+	&model.CategoryCarbonProducer{},
+	&model.CarbonProducer{},
 }
 
 func Migrate() {

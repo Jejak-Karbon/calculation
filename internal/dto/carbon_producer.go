@@ -5,6 +5,8 @@ type FilterCarbonProducer struct {
 }
 
 type CalculateCarbonProducer struct {
-	JarakTempuh  int `json:"jarak_tempuh" validate:"required"`
-	BahanBakar   string `json:"bahan_bakar" validate:"required"`
+	JarakTempuh  int `json:"jarak_tempuh"`
+	BahanBakar   string `json:"bahan_bakar"`
+	LamaPenggunaan  int `json:"lama_penggunaan"`
+	JumlahWatt   int `json:"jumlah_watt"`
 }

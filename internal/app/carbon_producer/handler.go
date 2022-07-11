@@ -53,6 +53,19 @@ func (h *handler) Get(c echo.Context) error {
 
 func (h *handler) Calculate(c echo.Context) error {
 
+	id,_:= strconv.Atoi(c.Param("carbon_producer_id"))
+	payloadToken := middleware.GetIDFromToken(c)
+	
+	var user_id uint = uint(payloadToken.(float64))
+	var carbon_producer_id uint = uint(id)
+
+	// get detail carbon producer
+
+	result, err := h.service.FindByID(c.Request().Context(), carbon_producer_id)
+	if err != nil {
+		return res.ErrorResponse(err).Send(c)
+	}
+
 	payload := new(dto.CalculateCarbonProducer)
 
 	if err := c.Bind(payload); err != nil {
@@ -64,17 +77,11 @@ func (h *handler) Calculate(c echo.Context) error {
 		return response.Send(c)
 	}
 
-	id,_:= strconv.Atoi(c.Param("carbon_producer_id"))
-	payloadToken := middleware.GetIDFromToken(c)
-	
-	var user_id uint = uint(payloadToken.(float64))
-	var carbon_producer_id uint = uint(id)
-
-	result, err := h.service.CreateUserCarbonProducer(c.Request().Context(), user_id, carbon_producer_id, payload)
-	if err != nil {
-		return res.ErrorResponse(err).Send(c)
+	result2, err2 := h.service.CreateUserCarbonProducer(c.Request().Context(), user_id, carbon_producer_id, result.CategoryCarbonProducerID ,  payload)
+	if err2 != nil {
+		return res.ErrorResponse(err2).Send(c)
 	}
 
-	return res.SuccessResponse(result).Send(c)
+	return res.SuccessResponse(result2).Send(c)
 
 }
